@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-import os
-from pathlib import Path
-
-from azure.identity import ClientSecretCredential, get_bearer_token_provider
 from langchain_classic.agents import AgentExecutor, create_react_agent
 from langchain_core.prompts import PromptTemplate
-from langchain_openai import AzureChatOpenAI
+from langchain_openai import ChatOpenAI
 
 from chat.tools import create_chat_tools
-# from langchain.agents import AgentExecutor, create_react_agent
-# from langchain.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI
+
+from dotenv import load_dotenv
+
 
 
 def run_react_agent(question: str, chroma_path: str, networkx_path: str, collection_name: str) -> str:
@@ -30,7 +26,7 @@ def run_react_agent(question: str, chroma_path: str, networkx_path: str, collect
 
 
 def _get_llm():
-    _load_env_file()
+    load_dotenv()
     return ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 
@@ -58,20 +54,3 @@ Question: {input}
 Thought:{agent_scratchpad}"""
     )
 
-
-
-def _load_env_file(path=".env") -> None:
-    env_path = Path(path).expanduser().resolve()
-    if not env_path.is_file():
-        return
-
-    for line in env_path.read_text(encoding="utf-8").splitlines():
-        stripped = line.strip()
-        if not stripped or stripped.startswith("#") or "=" not in stripped:
-            continue
-
-        key, value = stripped.split("=", 1)
-        key = key.strip()
-        value = value.strip().strip('"').strip("'")
-        if key and key not in os.environ:
-            os.environ[key] = value

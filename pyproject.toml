@@ -21,6 +21,7 @@ dependencies = [
     "azure-identity",
     "langchain-classic>=1.0.7",
     "langchain-core>=1.4.0",
+    "python-dotenv>=1.2.2",
 ]
 
 [tool.pytest.ini_options]
